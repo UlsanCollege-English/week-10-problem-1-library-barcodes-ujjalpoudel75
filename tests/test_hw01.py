@@ -1,8 +1,5 @@
-
-
+import random
 from main import make_table, hash_basic, put, get, has_key, size
-
-# ---- Normal tests (4) ----
 
 def test_make_table_and_empty_size():
     t = make_table(5)
@@ -29,22 +26,19 @@ def test_has_key_true_false():
     assert has_key(t, "L001") is True
     assert has_key(t, "M123") is False
 
-# ---- Edge-case tests (3) ----
-
 def test_collision_same_bucket():
-    t = make_table(2)  # force collisions
-    # Craft two keys that likely collide under sum-of-ords % 2
+    t = make_table(2)
     put(t, "AA", "T1")
     put(t, "BB", "T2")
     assert size(t) == 2
-    assert set(v for _, v in t[0] + t[1]) == {"T1", "T2"}
+    values = set(v for _, v in t[0] + t[1])
+    assert values == {"T1", "T2"}
 
-def test_empty_string_key_not_allowed_but_handled_gracefully():
+def test_empty_string_key():
     t = make_table(5)
-    # Behavior left to student; tests just ensure functions exist and do not crash on empty key use
     put(t, "", "EmptyTitle")
-    # Should still be retrievable if stored
-    assert get(t, "") in (None, "EmptyTitle")
+    result = get(t, "")
+    assert result in (None, "EmptyTitle")
 
 def test_unicode_keys():
     t = make_table(5)
@@ -52,14 +46,11 @@ def test_unicode_keys():
     assert has_key(t, "책123") is True
     assert get(t, "책123") == "K-Book"
 
-# ---- More-complex tests (3) ----
-
 def test_many_inserts_and_size_counts():
     t = make_table(11)
     for i in range(100):
         put(t, f"ID{i}", f"T{i}")
     assert size(t) == 100
-    # spot check
     assert get(t, "ID0") == "T0"
     assert get(t, "ID99") == "T99"
 
